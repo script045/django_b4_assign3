@@ -1,0 +1,31 @@
+{% extends 'employer/base.html' %}
+
+{% block title %}Post a Job{% endblock %}
+
+{% block content %}
+<h2>Post a New Job</h2>
+<form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="title" class="form-label">Job Title</label>
+        {{ form.title }}
+    </div>
+
+    <div class="mb-3">
+        <label for="company_name" class="form-label">Company Name</label>
+        {{ form.company_name }}
+    </div>
+
+    <div class="mb-3">
+        <label for="location" class="form-label">Location</label>
+        {{ form.location }}
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Job Description</label>
+        {{ form.description }}
+    </div>
+
+    <button type="submit" class="btn btn-success">Post Job</button>
+</form>
+{% endblock %}

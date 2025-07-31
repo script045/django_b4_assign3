@@ -1,0 +1,36 @@
+{% extends 'applicant/base.html' %}
+{% block title %}Browse Jobs{% endblock %}
+
+{% block content %}
+<h2>Available Jobs</h2>
+
+<form method="get" class="row g-2 my-3">
+    <div class="col-md-10">
+        <input type="text" name="q" class="form-control" placeholder="Search by title, company or location"
+            value="{{ query }}">
+    </div>
+    <div class="col-md-2 d-grid">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
+
+{% if jobs %}
+<div class="list-group">
+    {% for job in jobs %}
+    <div class="list-group-item">
+        <h5>{{ job.title }} <small class="text-muted">({{ job.company_name }})</small></h5>
+        <p class="mb-1"><strong>Location:</strong> {{ job.location }}</p>
+        <p>{{ job.description|truncatewords:20 }}</p>
+
+        {% if job.id in applied_job_ids %}
+        <span class="badge bg-secondary">Already Applied</span>
+        {% else %}
+        <a href="{% url 'apply_job' job.id %}" class="btn btn-outline-success btn-sm">Apply</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>No jobs found.</p>
+{% endif %}
+{% endblock %}

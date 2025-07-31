@@ -1,0 +1,37 @@
+{% extends 'employer/base.html' %}
+{% load static %}
+
+{% block title %}Applicants for {{ job.title }}{% endblock %}
+
+{% block content %}
+<h2>Applicants for: {{ job.title }}</h2>
+<p><strong>Company:</strong> {{ job.company_name }}</p>
+
+{% if applicants %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Applicant</th>
+            <th>Email</th>
+            <th>Resume</th>
+            <th>Cover Letter</th>
+            <th>Applied At</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for application in applicants %}
+        <tr>
+            <td>{{ application.applicant.username }}</td>
+            <td>{{ application.applicant.email }}</td>
+            <td><a href="{{ application.resume.url }}" target="_blank">Download</a></td>
+            <td>{{ application.cover_letter|truncatewords:20 }}</td>
+            <td>{{ application.applied_at|date:"Y-m-d H:i" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No applicants yet.</p>
+{% endif %}
+<a href="{% url 'employer_dashboard' %}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+{% endblock %}

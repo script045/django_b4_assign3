@@ -1,0 +1,34 @@
+{% extends 'applicant/base.html' %}
+{% block title %}Applicant Dashboard{% endblock %}
+
+{% block content %}
+<h2>Welcome, {{ request.user.username }}!</h2>
+<p class="mb-4">Here are the jobs you've applied to:</p>
+
+{% if applications %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Job Title</th>
+            <th>Company</th>
+            <th>Location</th>
+            <th>Applied At</th>
+            <th>Resume</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for app in applications %}
+        <tr>
+            <td>{{ app.job.title }}</td>
+            <td>{{ app.job.company_name }}</td>
+            <td>{{ app.job.location }}</td>
+            <td>{{ app.applied_at|date:"Y-m-d H:i" }}</td>
+            <td><a href="{{ app.resume.url }}" target="_blank">Download</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>You have not applied to any jobs yet.</p>
+{% endif %}
+{% endblock %}
