@@ -14,13 +14,13 @@
 
 
 ## admin: 
-barai
-11111111
+id: barai 
+pass: 11111111
 
 ## Employer
-user1
-111111111
+id: user1 
+pass: 111111111
 
 ## Applicant
-user2
-11111111
+id: user2 
+pass: 11111111
