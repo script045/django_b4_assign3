@@ -1,0 +1,74 @@
+{% extends 'applicant/base.html' %}
+{% load static %}
+
+{% block title %}My Applications{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">My Job Applications</h4>
+            <form method="GET" class="d-flex align-items-center">
+                <label for="status" class="me-2 mb-0">Filter:</label>
+                <select name="status" id="status" class="form-select form-select-sm me-2" onchange="this.form.submit()">
+                    <option value="">All Statuses</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+                <noscript><button type="submit" class="btn btn-sm btn-primary">Apply</button></noscript>
+            </form>
+        </div>
+        <div class="card-body">
+            {% if applications %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Location</th>
+                            <th>Resume</th>
+                            <th>Cover Letter</th>
+                            <th>Status</th>
+                            <th>Applied At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ app.job.title }}</td>
+                            <td>{{ app.job.company_name }}</td>
+                            <td>{{ app.job.location }}</td>
+                            <td>
+                                <a href="{{ app.resume.url }}" class="btn btn-sm btn-outline-primary" download>
+                                    Download
+                                </a>
+                            </td>
+                            <td>{{ app.cover_letter|truncatechars:100 }}</td>
+                            <td>
+                                {% if app.status == "Pending" %}
+                                <span class="badge bg-secondary">Pending</span>
+                                {% elif app.status == "Approved" %}
+                                <span class="badge bg-success">Approved</span>
+                                {% elif app.status == "Rejected" %}
+                                <span class="badge bg-danger">Rejected</span>
+                                {% else %}
+                                <span class="badge bg-dark">Unknown</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ app.applied_at|date:"M d, Y H:i" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">You haven’t applied for any jobs yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

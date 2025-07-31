@@ -77,14 +77,24 @@ def post_job(request):
 
 
 @login_required
-def job_applicants(request, job_id):
+def job_applications(request, job_id):
     job = get_object_or_404(Job, id=job_id, posted_by=request.user)
+    applications = Application.objects.filter(job=job)
 
-    applicants = Application.objects.filter(job=job).select_related('applicant')
+    if request.method == 'POST':
+        app_id = request.POST.get('application_id')
+        action = request.POST.get('action')
+        application = get_object_or_404(Application, id=app_id, job=job)
 
-    return render(request, 'employer/applicant_list.html', {
+        if action in ['Approved', 'Rejected']:
+            application.status = action
+            application.save()
+
+        return redirect('job_applications', job_id=job_id)
+
+    return render(request, 'employer/job_applications.html', {
         'job': job,
-        'applicants': applicants
+        'applications': applications
     })
 
 
@@ -152,12 +162,26 @@ def apply_job(request, job_id):
     })
 
 @login_required
-def applied_jobs(request):
-    if request.user.profile.role != 'applicant':
-        return redirect('login')
+def my_applications(request):
+    status_filter = request.GET.get('status')
+    applications = Application.objects.filter(applicant=request.user)
 
-    applications = Application.objects.select_related('job').filter(applicant=request.user).order_by('-applied_at')
+    if status_filter in ['Pending', 'Approved', 'Rejected']:
+        applications = applications.filter(status=status_filter)
 
-    return render(request, 'applicant/applied_jobs.html', {
-        'applications': applications
+    return render(request, 'applicant/my_applications.html', {
+        'applications': applications,
+        'status_filter': status_filter,
     })
+
+
+# @login_required
+# def applied_jobs(request):
+#     if request.user.profile.role != 'applicant':
+#         return redirect('login')
+
+#     applications = Application.objects.select_related('job').filter(applicant=request.user).order_by('-applied_at')
+
+#     return render(request, 'applicant/applied_jobs.html', {
+#         'applications': applications
+#     })

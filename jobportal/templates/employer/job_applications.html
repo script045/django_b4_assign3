@@ -1,0 +1,44 @@
+{% extends 'employer/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>Applications for: {{ job.title }}</h3>
+    <hr>
+
+    {% for app in applications %}
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <h5>{{ app.applicant.username }}</h5>
+            <p><strong>Cover Letter:</strong> {{ app.cover_letter }}</p>
+            <p>
+                <strong>Resume:</strong>
+                <a href="{{ app.resume.url }}" target="_blank">Download</a>
+            </p>
+            <p>
+                <strong>Status:</strong>
+                <span class="badge 
+                    {% if app.status == 'Approved' %} bg-success
+                    {% elif app.status == 'Rejected' %} bg-danger
+                    {% else %} bg-secondary
+                    {% endif %}
+                ">
+                    {{ app.status }}
+                </span>
+            </p>
+
+            {% if app.status == 'Pending' %}
+            <form method="POST" class="d-inline">
+                {% csrf_token %}
+                <input type="hidden" name="application_id" value="{{ app.id }}">
+                <button name="action" value="Approved" class="btn btn-sm btn-success">Approve</button>
+                <button name="action" value="Rejected" class="btn btn-sm btn-danger">Reject</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <p>No applications submitted yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}
